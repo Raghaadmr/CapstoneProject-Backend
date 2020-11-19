@@ -33,12 +33,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         return validated_data
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ['id', 'name', 'image', 'description']
-
-
 class StoreProductSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
