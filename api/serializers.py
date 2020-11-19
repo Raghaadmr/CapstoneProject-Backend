@@ -2,10 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from api.models import Product, Bill, BillDetail, Store
+from api.models import Product, Order, OrderItem, Store
 
-
-# user
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
@@ -15,6 +13,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
         return token
+
 
 class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -39,33 +38,37 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'name', 'price', 'image','description']
 
+
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = ['id', 'name','uuid']
 
-class BillDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BillDetail
-        fields = ['id', 'bill', 'subtotal' 'product', 'qty']
 
-class BillSerializer(serializers.ModelSerializer):
-    details = BillDetailSerializer(many=True)
+class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Bill
-        fields = ['total', 'tax', 'bill_date', 'details']
+        model = OrderItem
+        fields = ['id', 'order', 'subtotal' 'product', 'qty']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+    class Meta:
+        model = Order
+        fields = ['total', 'tax', 'date', 'items']
+
     def create(self, validated_data):
         total = validated_data['total']
         tax = validated_data['tax']
         request = self.context.get("request")
-        checkout = Bill(total=total, tax=tax, user=request.user)
-        checkout.save()
-        details = validated_data['details']
-        for detail in details:
+        checkout = Order.objects.create(total=total, tax=tax, user=request.user)
+        order_items = validated_data['items']
+
+        for item in order_items:
             product = item['product']
             qty = item['qty']
             if product < 6 :
-                bill_detail = BillDetail(checkout=checkout, qty=qty, product=product)
+                bill_detail = OrderItem(checkout=checkout, qty=qty, product=product)
                 bill_detail.save()
             else:
                 bill_detail.delete()
