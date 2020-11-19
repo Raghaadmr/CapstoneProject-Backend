@@ -4,4 +4,5 @@ from api import views
 urlpatterns = [
     path('login/', views.MyTokenObtainPairView.as_view(), name='login'),
     path('signup/', views.SignUp.as_view(), name='signup'),
-    ]
+    path('product/', views.ProductView.as_view(), name='product'),
+]
