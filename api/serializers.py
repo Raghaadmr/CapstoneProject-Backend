@@ -53,17 +53,43 @@ class StoreProductSerializer(serializers.ModelSerializer):
         return obj.product.description
 
 
+
+
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = ['name', 'uuid']
 
-
+#Order list
 class OrderItemSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
     class Meta:
         model = OrderItem
-        fields = ['store_product', 'qty']
+        fields = ['name','price', 'qty']
 
+    def get_name(self, obj):
+        return obj.product.name
+
+    def get_price(self, obj):
+        return obj.storeproduct.price
+
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+    class Meta:
+        model = Order
+        fields = ['id','number', 'total', 'date', 'tax', 'items']
+
+#checkout
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = serializers.SerializerMethodField()
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'product', 'qty']
+    def get_product(self, obj):
+        return obj.storeproduct.product
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)

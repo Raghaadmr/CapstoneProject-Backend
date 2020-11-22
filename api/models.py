@@ -16,7 +16,7 @@ class Product(models.Model):
     name = models.CharField(max_length=191)
     description = models.TextField(null=True, blank=True)
     barcode = models.CharField(max_length=50)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return self.name
@@ -38,10 +38,9 @@ class Order(models.Model):
     tax = models.DecimalField(decimal_places=2, max_digits=12)
     date = models.DateTimeField(auto_now_add=True)
 
-
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='items')
-    store_product = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
+    storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField()
     subtotal = models.DecimalField(decimal_places=2, max_digits=12)
