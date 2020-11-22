@@ -8,4 +8,5 @@ urlpatterns = [
          views.ProductView.as_view(), name='products'),
     # path('products/', views.ProductView.as_view(), name='list-products'),
     path('stores/', views.StoreListView.as_view(), name='stores'),
+    path('orders/', views.OrderListView.as_view(), name='orders'),
 ]

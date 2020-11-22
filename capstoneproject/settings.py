@@ -27,7 +27,7 @@ SECRET_KEY = 'o8yv%z#=_7s-hbiz2^s+i3+_wgmses4esx=enpqj!dw!iwe9jv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -91,6 +91,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
+     'AUTH_HEADER_TYPES': ('JWT',),
     'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
 }
 # Password validation
