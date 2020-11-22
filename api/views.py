@@ -33,8 +33,9 @@ class StoreListView(ListAPIView):
     serializer_class = StoreSerializer
 
 
+
 class OrderListView(ListAPIView):
-    serializer_class = OrderItemSerializer
+    serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -44,4 +45,6 @@ class OrderListView(ListAPIView):
 
 
 class OrderView(CreateAPIView):
-    serializer_class = Order
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+

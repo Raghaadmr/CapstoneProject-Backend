@@ -5,8 +5,8 @@ urlpatterns = [
     path('login/', views.MyTokenObtainPairView.as_view(), name='login'),
     path('signup/', views.SignUp.as_view(), name='signup'),
     path('<str:store_uuid>/products/<str:barcode>/',
-         views.ProductView.as_view(), name='products'),
+         views.ProductView.as_view(), name='product-detail'),
     # path('products/', views.ProductView.as_view(), name='list-products'),
-    path('stores/', views.StoreListView.as_view(), name='stores'),
-    path('orders/', views.OrderListView.as_view(), name='orders'),
-]
+    path('stores/', views.StoreListView.as_view(), name='store-list'),
+    path('order/', views.OrderView.as_view(), name='order-create'),
+
