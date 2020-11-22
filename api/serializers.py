@@ -69,7 +69,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['name','price', 'qty']
 
     def get_name(self, obj):
-        return obj.product.name
+        return obj.storeproduct.product.name
 
     def get_price(self, obj):
         return obj.storeproduct.price
@@ -83,20 +83,20 @@ class OrderListSerializer(serializers.ModelSerializer):
         fields = ['id','number', 'total', 'date', 'tax', 'items']
 
 #checkout
-class OrderItemSerializer(serializers.ModelSerializer):
-    product = serializers.SerializerMethodField()
-    class Meta:
-        model = OrderItem
-        fields = ['id', 'product', 'qty']
-    def get_product(self, obj):
-        return obj.storeproduct.product
+# class OrderItemSerializer(serializers.ModelSerializer):
+#     product = serializers.SerializerMethodField()
+#     class Meta:
+#         model = OrderItem
+#         fields = ['id', 'product', 'qty']
+#     def get_product(self, obj):
+#         return obj.storeproduct.product
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = ['total', 'tax', 'items']
+        fields = ['id', 'total', 'tax', 'items']
 
     def create(self, validated_data):
         total = validated_data['total']

@@ -47,4 +47,3 @@ class OrderListView(ListAPIView):
 class OrderView(CreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
-
