@@ -33,16 +33,7 @@ class StoreListView(ListAPIView):
     serializer_class = StoreSerializer
 
 
-# Switch this to an order detail
-class OrderItemView(ListAPIView):
-    serializer_class = OrderItemSerializer
+class OrderCreateView(CreateAPIView):
+    serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        print(user)
-        return user.objects.all()
-
-
-class OrderView(CreateAPIView):
-    serializer_class = Order

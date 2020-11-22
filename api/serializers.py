@@ -62,7 +62,7 @@ class StoreSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['id', 'order', 'subtotal' 'product', 'qty']
+        fields = ['store_product', 'qty']
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -70,17 +70,19 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['total', 'tax', 'date', 'items']
+        fields = ['total', 'tax', 'items']
 
     def create(self, validated_data):
         total = validated_data['total']
         tax = validated_data['tax']
         request = self.context.get("request")
-        checkout = Order.objects.create(
+        order_obj = Order.objects.create(
             total=total, tax=tax, user=request.user)
         order_items = validated_data['items']
 
-        # check if order has more than 5 items (business model logic)
+        for item in order_items:
+            product = item
+            # check if order has more than 5 items (business model logic)
         if len(order_items) > 5:
             return "Only 5 items allowed!"
 
