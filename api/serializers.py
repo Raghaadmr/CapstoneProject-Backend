@@ -60,6 +60,7 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ['name', 'uuid']
 
+
 #Order list
 class OrderItemSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -107,9 +108,8 @@ class OrderSerializer(serializers.ModelSerializer):
         order_items = validated_data['items']
 
         for item in order_items:
-            product = item
-            # check if order has more than 5 items (business model logic)
-        if len(order_items) > 5:
-            return "Only 5 items allowed!"
+            # Create order items
+            # assign them to order_obj
+            pass
 
         return validated_data

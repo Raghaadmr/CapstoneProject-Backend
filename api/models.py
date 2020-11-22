@@ -41,6 +41,6 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='items')
-    storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
+    store_product = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField()
     subtotal = models.DecimalField(decimal_places=2, max_digits=12)
