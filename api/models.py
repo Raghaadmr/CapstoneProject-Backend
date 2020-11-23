@@ -31,6 +31,9 @@ class StoreProduct(models.Model):
         Product, on_delete=models.CASCADE, related_name='products')
     price = models.DecimalField(decimal_places=2, max_digits=7)
 
+    def __str__(self):
+         return f"{self.product} in {self.store}"
+
 
 
 class Order(models.Model):
@@ -41,6 +44,9 @@ class Order(models.Model):
     tax = models.DecimalField(decimal_places=2, max_digits=12)
     date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f" Order {self.id}  by {self.user} "
+
 
 
 class OrderItem(models.Model):
@@ -49,3 +55,6 @@ class OrderItem(models.Model):
     storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField()
     subtotal = models.DecimalField(decimal_places=2, max_digits=12)
+
+    def __str__(self):
+        return f" {self.storeproduct},  {self.order} "
