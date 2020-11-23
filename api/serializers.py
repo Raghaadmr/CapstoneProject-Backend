@@ -40,7 +40,7 @@ class StoreProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StoreProduct
-        fields = ['name', 'description', 'image', 'price']
+        fields = ['id','name', 'description', 'image', 'price']
 
     def get_name(self, obj):
         return obj.product.name
