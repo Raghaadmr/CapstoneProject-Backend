@@ -62,17 +62,17 @@ class StoreSerializer(serializers.ModelSerializer):
 
 #Order list
 class OrderItemSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    price = serializers.SerializerMethodField()
+    # name = serializers.SerializerMethodField()
+    # price = serializers.SerializerMethodField()
     class Meta:
         model = OrderItem
-        fields = ['name','price', 'qty']
+        fields = ['storeproduct','qty']
 
-    def get_name(self, obj):
-        return obj.storeproduct.product.name
+    # def get_name(self, obj):
+    #     return obj.storeproduct.product.name
 
-    def get_price(self, obj):
-        return obj.storeproduct.price
+    # def get_price(self, obj):
+    #     return obj.items.storeproduct.price
 
 
 
@@ -107,9 +107,11 @@ class OrderSerializer(serializers.ModelSerializer):
         order_items = validated_data['items']
 
         for item in order_items:
-            product = item
-            # check if order has more than 5 items (business model logic)
-        if len(order_items) > 5:
-            return "Only 5 items allowed!"
+            storeproduct = item['storeproduct']
+            qty = item['qty']
+            # storeproduct_obj = StoreProduct.objects.get(id=storeproduct)
+            subtotal = (storeproduct.price * qty)
+            new_item = OrderItem(order=order_obj, qty=qty, storeproduct=storeproduct, subtotal=subtotal)
+            new_item.save()
 
         return validated_data
