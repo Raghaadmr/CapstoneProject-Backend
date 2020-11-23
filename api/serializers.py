@@ -61,7 +61,7 @@ class StoreProductSerializer(serializers.ModelSerializer):
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ['name', 'uuid']
+        fields = ['uuid']
 
 
 
@@ -84,9 +84,10 @@ class OrderItemListSerializer(serializers.ModelSerializer):
 
 class OrderListSerializer(serializers.ModelSerializer):
     items = OrderItemListSerializer(many=True)
+    store = StoreSerializer()
     class Meta:
         model = Order
-        fields = ['id','number', 'total', 'date', 'tax', 'items']
+        fields = ['id','number', 'total', 'date', 'tax', 'items', 'store']
 
 
 
@@ -102,17 +103,19 @@ class OrderItemCheckoutSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemCheckoutSerializer(many=True)
+    store = serializers.CharField()
 
     class Meta:
         model = Order
-        fields = ['id', 'total', 'tax', 'items']
+        fields = ['id', 'total', 'tax', 'items', 'store']
 
     def create(self, validated_data):
+        store = Store.objects.get(uuid=validated_data['store'])
         total = validated_data['total']
         tax = validated_data['tax']
         request = self.context.get("request")
         order_obj = Order.objects.create(
-            total=total, tax=tax, user=request.user)
+            total=total, tax=tax, user=request.user, store=store )
         order_items = validated_data['items']
 
         for item in order_items:

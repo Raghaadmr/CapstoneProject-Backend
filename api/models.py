@@ -12,7 +12,6 @@ class Store(models.Model):
         return self.name
 
 
-
 class Product(models.Model):
     name = models.CharField(max_length=191)
     description = models.TextField(null=True, blank=True)
@@ -23,7 +22,6 @@ class Product(models.Model):
         return self.name
 
 
-
 class StoreProduct(models.Model):
     store = models.ForeignKey(
         Store, on_delete=models.CASCADE, related_name='stores')
@@ -32,8 +30,7 @@ class StoreProduct(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=7)
 
     def __str__(self):
-         return f"{self.product} in {self.store}"
-
+        return f"{self.product} in {self.store}"
 
 
 class Order(models.Model):
@@ -41,12 +38,13 @@ class Order(models.Model):
     total = models.DecimalField(decimal_places=2, max_digits=12)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='orders')
+    store = models.ForeignKey(
+        Store, on_delete=models.CASCADE, related_name='orders')
     tax = models.DecimalField(decimal_places=2, max_digits=12)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f" Order {self.id}  by {self.user} "
-
 
 
 class OrderItem(models.Model):
