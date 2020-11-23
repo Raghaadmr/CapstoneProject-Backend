@@ -5,6 +5,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from api.models import Product, Order, OrderItem, Store, StoreProduct
 
 
+#user
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
@@ -33,6 +35,9 @@ class SignUpSerializer(serializers.ModelSerializer):
         return validated_data
 
 
+
+#store
+
 class StoreProductSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
@@ -53,46 +58,50 @@ class StoreProductSerializer(serializers.ModelSerializer):
         return obj.product.description
 
 
-
-
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = ['name', 'uuid']
 
-#Order list
-class OrderItemSerializer(serializers.ModelSerializer):
-    # name = serializers.SerializerMethodField()
-    # price = serializers.SerializerMethodField()
+
+
+#list
+
+class OrderItemListSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
     class Meta:
         model = OrderItem
-        fields = ['storeproduct','qty']
+        fields = ['name','price', 'qty']
 
-    # def get_name(self, obj):
-    #     return obj.storeproduct.product.name
+    def get_name(self, obj):
+        return obj.storeproduct.product.name
 
-    # def get_price(self, obj):
-    #     return obj.items.storeproduct.price
+    def get_price(self, obj):
+        return obj.storeproduct.price
 
 
 
 class OrderListSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True)
+    items = OrderItemListSerializer(many=True)
     class Meta:
         model = Order
         fields = ['id','number', 'total', 'date', 'tax', 'items']
 
+
+
 #checkout
-# class OrderItemSerializer(serializers.ModelSerializer):
-#     product = serializers.SerializerMethodField()
-#     class Meta:
-#         model = OrderItem
-#         fields = ['id', 'product', 'qty']
-#     def get_product(self, obj):
-#         return obj.storeproduct.product
+
+class OrderItemCheckoutSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OrderItem
+        fields = ['storeproduct', 'qty']
+
+
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True)
+    items = OrderItemCheckoutSerializer(many=True)
 
     class Meta:
         model = Order
@@ -107,11 +116,10 @@ class OrderSerializer(serializers.ModelSerializer):
         order_items = validated_data['items']
 
         for item in order_items:
-            storeproduct = item['storeproduct']
+            storeproduct=item['storeproduct']
             qty = item['qty']
-            # storeproduct_obj = StoreProduct.objects.get(id=storeproduct)
             subtotal = (storeproduct.price * qty)
-            new_item = OrderItem(order=order_obj, qty=qty, storeproduct=storeproduct, subtotal=subtotal)
+            new_item = OrderItem(order=order_obj, storeproduct=storeproduct, qty=qty, subtotal=subtotal)
             new_item.save()
 
         return validated_data

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from .serializers import (SignUpSerializer, MyTokenObtainPairSerializer,
-                          StoreSerializer, OrderItemSerializer, OrderSerializer,OrderListSerializer ,StoreProductSerializer)
+                          StoreSerializer, OrderItemListSerializer, OrderItemCheckoutSerializer, OrderSerializer, OrderListSerializer ,StoreProductSerializer)
 from rest_framework.generics import (
     CreateAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView)
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -35,7 +35,7 @@ class StoreListView(ListAPIView):
 
 
 class OrderListView(ListAPIView):
-    serializer_class = OrderSerializer
+    serializer_class = OrderListSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

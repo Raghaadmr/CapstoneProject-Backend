@@ -12,6 +12,7 @@ class Store(models.Model):
         return self.name
 
 
+
 class Product(models.Model):
     name = models.CharField(max_length=191)
     description = models.TextField(null=True, blank=True)
@@ -22,12 +23,17 @@ class Product(models.Model):
         return self.name
 
 
+
 class StoreProduct(models.Model):
     store = models.ForeignKey(
         Store, on_delete=models.CASCADE, related_name='stores')
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='products')
     price = models.DecimalField(decimal_places=2, max_digits=7)
+
+    def __str__(self):
+         return f"{self.product} in {self.store}"
+
 
 
 class Order(models.Model):
@@ -38,9 +44,17 @@ class Order(models.Model):
     tax = models.DecimalField(decimal_places=2, max_digits=12)
     date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f" Order {self.id}  by {self.user} "
+
+
+
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='items')
     storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField()
     subtotal = models.DecimalField(decimal_places=2, max_digits=12)
+
+    def __str__(self):
+        return f" {self.storeproduct},  {self.order} "
