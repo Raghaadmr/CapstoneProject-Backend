@@ -39,9 +39,7 @@ class OrderListView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        print(user)
-        return user.orders.all()
+        return self.request.user.orders.all()
 
 
 class OrderView(CreateAPIView):

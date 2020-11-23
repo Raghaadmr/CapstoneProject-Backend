@@ -5,7 +5,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from api.models import Product, Order, OrderItem, Store, StoreProduct
 
 
-#user
+'''
+Auth Serializers
+'''
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
@@ -36,7 +38,9 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 
-#store
+'''
+Store Serializers
+'''
 
 class StoreProductSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -61,11 +65,13 @@ class StoreProductSerializer(serializers.ModelSerializer):
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ['uuid']
+        fields = '__all__'
 
 
 
-#list
+'''
+Order History Serializers
+'''
 
 class OrderItemListSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -75,10 +81,10 @@ class OrderItemListSerializer(serializers.ModelSerializer):
         fields = ['name','price', 'qty']
 
     def get_name(self, obj):
-        return obj.storeproduct.product.name
+        return obj.store_product.product.name
 
     def get_price(self, obj):
-        return obj.storeproduct.price
+        return obj.store_product.price
 
 
 
@@ -91,13 +97,15 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 
 
-#checkout
+'''
+Checkout Serializers
+'''
 
 class OrderItemCheckoutSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['storeproduct', 'qty']
+        fields = ['store_product', 'qty']
 
 
 
@@ -115,14 +123,18 @@ class OrderSerializer(serializers.ModelSerializer):
         tax = validated_data['tax']
         request = self.context.get("request")
         order_obj = Order.objects.create(
-            total=total, tax=tax, user=request.user, store=store )
+            total=total, tax=tax, user=request.user, store=store
+        )
         order_items = validated_data['items']
 
         for item in order_items:
-            storeproduct=item['storeproduct']
+            store_product=item['store_product']
             qty = item['qty']
-            subtotal = (storeproduct.price * qty)
-            new_item = OrderItem(order=order_obj, storeproduct=storeproduct, qty=qty, subtotal=subtotal)
-            new_item.save()
-
+            subtotal = (store_product.price * qty)
+            OrderItem.objects.create(
+                order=order_obj, 
+                store_product=store_product, 
+                qty=qty, 
+                subtotal=subtotal
+            )
         return validated_data
