@@ -106,7 +106,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'total', 'tax', 'items', 'store']
+        fields = ['number', 'items', 'total', 'tax', 'store']
 
     def create(self, validated_data):
         store = Store.objects.get(uuid=validated_data['store'])
@@ -125,11 +125,10 @@ class OrderSerializer(serializers.ModelSerializer):
                 order=order_obj, storeproduct=storeproduct, qty=qty, subtotal=subtotal)
             new_item.save()
 
-        return validated_data
+        return order_obj
 
 
 class CheckoutLinkSerializer(serializers.Serializer):
-    # url = serializers.CharField()
     url = serializers.SerializerMethodField()
 
     class Meta:
@@ -138,11 +137,8 @@ class CheckoutLinkSerializer(serializers.Serializer):
 
     def get_url(self, obj):
         order_obj = obj
-        print(order_obj.total)
-
         url = "https://api.tap.company/v2/charges"
 
-        # payload = "{\"amount\":1,\"currency\":\"KWD\",\"threeDSecure\":true,\"save_card\":false,\"description\":\"Test Description\",\"statement_descriptor\":\"Sample\",\"metadata\":{\"udf1\":\"test 1\",\"udf2\":\"test 2\"},\"reference\":{\"transaction\":\"txn_0001\",\"order\":\"ord_0001\"},\"receipt\":{\"email\":false,\"sms\":true},\"customer\":{\"first_name\":\"test\",\"middle_name\":\"test\",\"last_name\":\"test\",\"email\":\"test@test.com\",\"phone\":{\"country_code\":\"965\",\"number\":\"50000000\"}},\"merchant\":{\"id\":\"\"},\"source\":{\"id\":\"src_kw.knet\"},\"post\":{\"url\":\"http://your_website.com/post_url\"},\"redirect\":{\"url\":\"http://your_website.com/redirect_url\"}}"
         payload = {
             "amount": f"{order_obj.total}",
             "currency": "SAR",
@@ -163,10 +159,10 @@ class CheckoutLinkSerializer(serializers.Serializer):
                 "id": "src_all"
             },
             "post": {
-                "url": "https://3d096af75b80.ngrok.io/api/v1/checkout/complete/"
+                "url": "https://18eeeb80fdad.ngrok.io/api/v1/checkout/complete/"
             },
             "redirect": {
-                "url": "https://3d096af75b80.ngrok.io/api/v1/checkout/thankyou/"
+                "url": "https://18eeeb80fdad.ngrok.io/api/v1/checkout/thankyou/"
             }
         }
         payload = json.dumps(payload)
@@ -175,7 +171,6 @@ class CheckoutLinkSerializer(serializers.Serializer):
             'content-type': "application/json"
         }
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response.text)
         response = response.json()
         order_obj.status = response['status']
         order_obj.save()

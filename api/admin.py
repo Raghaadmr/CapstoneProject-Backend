@@ -39,7 +39,6 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ['date', 'store']
     inlines = [OrderItemInline]
 
-
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem)
 admin.site.register(Payment)

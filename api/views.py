@@ -44,7 +44,6 @@ class OrderListView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        print(user)
         return user.orders.all()
 
 
@@ -69,6 +68,7 @@ class CheckoutCompleteView(APIView):
         # validate the data
         order_obj = Order.objects.get(
             number=request.data['reference']['order'])
+            
         if (order_obj.status == "INITIATED") and (request.data['status'] == "CAPTURED"):
             Payment.objects.create(
                 reference=request.data['id'], order=order_obj, tap_response_json=request.data)

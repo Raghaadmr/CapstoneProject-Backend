@@ -12,5 +12,4 @@ urlpatterns = [
     path('checkout/<str:uuid>/get_payment_url/', views.CheckoutLinkView.as_view(), name='get-link'),
     path('checkout/complete/', views.CheckoutCompleteView.as_view(), name='checkout-complete'),
     path('checkout/thankyou/', views.CheckoutThnakyouView.as_view(), name='checkout-thankyou'),
-
 ]
