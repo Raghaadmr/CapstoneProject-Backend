@@ -136,3 +136,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+TAP_TOKEN = "sk_test_XKokBfNWv6FIYuTMg5sLPjhJ"
+
+try:
+    from .local_settings import *
+except:
+    pass
