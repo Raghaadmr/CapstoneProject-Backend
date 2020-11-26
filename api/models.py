@@ -36,6 +36,7 @@ class StoreProduct(models.Model):
 class Order(models.Model):
     number = models.UUIDField(default=uuid.uuid4)
     total = models.DecimalField(decimal_places=2, max_digits=12)
+    status = models.CharField(max_length=50, default="NOT PAID")
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='orders')
     store = models.ForeignKey(
@@ -56,3 +57,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f" {self.storeproduct},  {self.order} "
+
+
+class Payment(models.Model):
+    reference = models.CharField(max_length=50)
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name='payment')
+    date = models.DateTimeField(auto_now=True)
+    tap_response_json = models.JSONField()
+
+    def __str__(self):
+        return f"{self.order} - {self.reference}"
