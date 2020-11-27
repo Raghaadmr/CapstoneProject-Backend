@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from api.models import Order, OrderItem, Payment, Product, Store, StoreProduct
-import requests
-import json
 
 # user
 
@@ -126,52 +124,3 @@ class OrderSerializer(serializers.ModelSerializer):
             new_item.save()
 
         return order_obj
-
-
-class CheckoutLinkSerializer(serializers.Serializer):
-    url = serializers.SerializerMethodField()
-
-    class Meta:
-        model = OrderItem
-        fields = ['order', 'url']
-
-    def get_url(self, obj):
-        order_obj = obj
-        url = "https://api.tap.company/v2/charges"
-
-        payload = {
-            "amount": f"{order_obj.total}",
-            "currency": "SAR",
-            "reference": {
-                "transaction": "txn_0001",
-                "order": f"{order_obj.number}"
-            },
-            "customer": {
-                "first_name": f"{order_obj.user.first_name}",
-                "last_name": f"{order_obj.user.last_name}",
-                "email": f"{order_obj.user.email}",
-                "phone": {
-                    "country_code": "966",
-                    "number": f"{order_obj.user.username[1:]}"
-                }
-            },
-            "source": {
-                "id": "src_all"
-            },
-            "post": {
-                "url": "https://18eeeb80fdad.ngrok.io/api/v1/checkout/complete/"
-            },
-            "redirect": {
-                "url": "https://18eeeb80fdad.ngrok.io/api/v1/checkout/thankyou/"
-            }
-        }
-        payload = json.dumps(payload)
-        headers = {
-            'authorization': "Bearer sk_test_XKokBfNWv6FIYuTMg5sLPjhJ",
-            'content-type': "application/json"
-        }
-        response = requests.request("POST", url, data=payload, headers=headers)
-        response = response.json()
-        order_obj.status = response['status']
-        order_obj.save()
-        return response['transaction']['url']
