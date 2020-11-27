@@ -23,10 +23,8 @@ class Product(models.Model):
 
 
 class StoreProduct(models.Model):
-    store = models.ForeignKey(
-        Store, on_delete=models.CASCADE, related_name='stores')
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='products')
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='stores')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products')
     price = models.DecimalField(decimal_places=2, max_digits=7)
 
     def __str__(self):
@@ -37,10 +35,8 @@ class Order(models.Model):
     number = models.UUIDField(default=uuid.uuid4)
     total = models.DecimalField(decimal_places=2, max_digits=12)
     status = models.CharField(max_length=50, default="NOT PAID")
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='orders')
-    store = models.ForeignKey(
-        Store, on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='orders')
     tax = models.DecimalField(decimal_places=2, max_digits=12)
     date = models.DateTimeField(auto_now_add=True)
 
@@ -49,8 +45,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='items')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField()
     subtotal = models.DecimalField(decimal_places=2, max_digits=12)
@@ -61,8 +56,7 @@ class OrderItem(models.Model):
 
 class Payment(models.Model):
     reference = models.CharField(max_length=50)
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='payment')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payment')
     date = models.DateTimeField(auto_now=True)
     tap_response_json = models.JSONField()
 

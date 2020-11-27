@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from .serializers import (SignUpSerializer, MyTokenObtainPairSerializer,
                           StoreSerializer, OrderItemListSerializer, OrderItemCheckoutSerializer,
-                          OrderSerializer, OrderListSerializer, StoreProductSerializer,)
+                          OrderSerializer, OrderListSerializer, StoreProductSerializer,
+                          )
 from rest_framework.generics import (
     CreateAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView)
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -11,7 +12,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+
 from .utils import get_payment_url
+
 
 class SignUp(CreateAPIView):
     serializer_class = SignUpSerializer
@@ -52,20 +56,28 @@ class OrderView(CreateAPIView):
 
 
 # Add statuses to your responses
+"""
+for more response status visit the link 
+https://www.django-rest-framework.org/api-guide/status-codes/
+
+"""
+
+
 class CheckoutLinkView(APIView):
     # permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, uuid):
         order = Order.objects.get(number=uuid)
         url = get_payment_url(order)
-        return Response({'url': url})
+        return Response({'url': url}, status=status.HTTP_200_OK)
 
 
 class CheckoutCompleteView(APIView):
     def post(self, request):
         # validate the data
-        order_obj = Order.objects.get(number=request.data['reference']['order'])
-            
+        order_obj = Order.objects.get(
+            number=request.data['reference']['order'])
+
         if (order_obj.status == "INITIATED") and (request.data['status'] == "CAPTURED"):
             Payment.objects.create(
                 reference=request.data['id'],
@@ -74,9 +86,9 @@ class CheckoutCompleteView(APIView):
             )
         order_obj.status = request.data['status']
         order_obj.save()
-        return Response({"data": request.data})
+        return Response({"data": request.data}, status=status.HTTP_201_CREATED)
 
-# Typo
-class CheckoutThnakyouView(APIView):
+
+class CheckoutThankyouView(APIView):
     def get(self, request):
-        return Response({'tap_id': request.GET})
+        return Response({'tap_id': request.GET}, status=status.HTTP_200_OK)

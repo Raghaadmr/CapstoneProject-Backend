@@ -120,7 +120,9 @@ class OrderSerializer(serializers.ModelSerializer):
             qty = item['qty']
             subtotal = (storeproduct.price * qty)
             new_item = OrderItem(
-                order=order_obj, storeproduct=storeproduct, qty=qty, subtotal=subtotal)
+                order=order_obj, storeproduct=storeproduct,
+                qty=qty, subtotal=subtotal
+            )
             new_item.save()
 
         return order_obj
