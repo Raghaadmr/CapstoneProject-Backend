@@ -68,6 +68,8 @@ class CheckoutLinkView(APIView):
 
     def post(self, request, uuid):
         order = Order.objects.get(number=uuid)
+        if order.status == "CAPTURED":
+            return Response({'message': 'it\'s already paid'}, status=status.HTTP_403_FORBIDDEN)
         url = get_payment_url(order)
         return Response({'url': url}, status=status.HTTP_200_OK)
 
@@ -75,8 +77,7 @@ class CheckoutLinkView(APIView):
 class CheckoutCompleteView(APIView):
     def post(self, request):
         # validate the data
-        order_obj = Order.objects.get(
-            number=request.data['reference']['order'])
+        order_obj = Order.objects.get(number=request.data['reference']['order'])
 
         if (order_obj.status == "INITIATED") and (request.data['status'] == "CAPTURED"):
             Payment.objects.create(
