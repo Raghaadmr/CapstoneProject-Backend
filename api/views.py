@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .utils import get_payment_url
+import json
 
 
 class SignUp(CreateAPIView):
@@ -83,8 +84,9 @@ class CheckoutCompleteView(APIView):
             Payment.objects.create(
                 reference=request.data['id'],
                 order=order_obj,
-                tap_response_json=request.data
+                tap_response_json=json.dumps(request.data)
             )
+        # json.loads(order_obj.tap_response) 
         order_obj.status = request.data['status']
         order_obj.save()
         return Response({"data": request.data}, status=status.HTTP_201_CREATED)
