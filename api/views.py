@@ -83,9 +83,9 @@ class CheckoutCompleteView(APIView):
             Payment.objects.create(
                 reference=request.data['id'],
                 order=order_obj,
-                tap_response_json=request.data
+                # tap_response_json=request.data
             )
-        # order_obj.status = request.data['status']
+            order_obj.status = request.data['status']
         order_obj.save()
         return Response({"data": request.data}, status=status.HTTP_201_CREATED)
 

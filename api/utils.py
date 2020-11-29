@@ -26,10 +26,10 @@ def get_payment_url(order):
             "id": "src_all"
         },
         "post": {
-            "url": "https://18eeeb80fdad.ngrok.io/api/v1/checkout/complete/"
+            "url": "https://d3c6eea0d3d8.ngrok.io/api/v1/checkout/complete/"
         },
         "redirect": {
-            "url": "https://18eeeb80fdad.ngrok.io/api/v1/checkout/thankyou/"
+            "url": "https://d3c6eea0d3d8.ngrok.io/api/v1/checkout/thankyou/"
         }
     }
 
