@@ -58,7 +58,7 @@ class Payment(models.Model):
     reference = models.CharField(max_length=50)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payment')
     date = models.DateTimeField(auto_now=True)
-    tap_response_json = models.JSONField()
+    # tap_response_json = models.JSONField()
 
     def __str__(self):
         return f"{self.order} - {self.reference}"

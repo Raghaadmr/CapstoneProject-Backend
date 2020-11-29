@@ -85,7 +85,7 @@ class CheckoutCompleteView(APIView):
                 order=order_obj,
                 tap_response_json=request.data
             )
-        order_obj.status = request.data['status']
+        # order_obj.status = request.data['status']
         order_obj.save()
         return Response({"data": request.data}, status=status.HTTP_201_CREATED)
 
